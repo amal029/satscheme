@@ -1,5 +1,5 @@
 CC=csc
-OPTS=-c -debug-level 2
+OPTS=-c -O2			# Be careful, making -O5 gives segfaults!
 LDFLAGS=
 SRCS=parsedimacs.scm main.scm
 OBJS=parsedimacs.o main.o
