@@ -1,9 +1,9 @@
 ;;; This is for the compiled case
-;; (import chicken scheme)
 ;; (declare (uses parsedimacs))
 (include "parsedimacs")
 
-(use args)
+(require-extension args)
+(require-extension srfi-37)
 
 (define opts
   (list 
