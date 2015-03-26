@@ -1,5 +1,5 @@
 CC=csc
-OPTS=-c -O5
+OPTS=-c -O5 -feature debug
 LDFLAGS=
 SRCS=parsedimacs.scm main.scm
 OBJS=parsedimacs.o main.o

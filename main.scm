@@ -1,4 +1,5 @@
 ;;; This is for the compiled case
+;; (import chicken scheme)
 ;; (declare (uses parsedimacs))
 (include "parsedimacs")
 
@@ -31,10 +32,9 @@
 
 ;; (receive (options operands)
 ;;     (args:parse (command-line-arguments) opts)
-;;   (if (not (eq? operands '()))
-;;       (parse (car operands))))
+;;   (parse (alist-ref 'f options)))
 
-;;; This is for the interpreter case!
+;; This is for the interpreter case!
 (define (main args)
   (if (not (eq? args '()))
       (parse (car args))
