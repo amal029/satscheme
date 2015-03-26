@@ -1,14 +1,14 @@
 CC=csc
 OPTS=-c -O5
+LDFLAGS=
 SRCS=parsedimacs.scm main.scm
-OBJS=$(SRCS:.scm=.o)
+OBJS=parsedimacs.o main.o
 
-all: $(SRCS) $(EXEC)
+all: main
 
-$(EXEC): $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) -o $@
-.scm.o:
-	$(CC) $(OPTS) $< -o $@
+main:
+	$(CC) $(OPTS) $(SRCS)
+	$(CC) $(OBJS) -o $@
 
 clean:
-	rm -rf *.o
+	rm -rf *.o main
