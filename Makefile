@@ -8,7 +8,10 @@ all: main
 
 main:
 	$(CC) $(OPTS) $(SRCS)
-	$(CC) $(OBJS) -o $@
+	$(CC) $(LDFLAGS) $(OBJS) -o $@
+
+interpret:
+	csi -ss main.scm $(FILE)
 
 clean:
 	rm -rf *.o main
