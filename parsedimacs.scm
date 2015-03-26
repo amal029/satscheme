@@ -2,7 +2,7 @@
 ;;; Thu Mar 26 16:14:50 NZDT 2015
 ;;; TODO: Add more error checking by looking at "p" 
 
-(declare (hide dimacs) (unit parsedimacs))
+(declare (uses extras) (hide dimacs) (unit parsedimacs))
 (require-extension s)
 (require-extension section-combinators)
 
