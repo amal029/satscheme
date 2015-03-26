@@ -1,20 +1,12 @@
-;;; DIMACS file format is as follows
+;;; Author: Avinash Malik
+;;; Thu Mar 26 16:14:50 NZDT 2015
+;;; TODO: Add more error checking by looking at "p" 
 
-;;; Line starting with character #c is a comment line and should be
-;;; ignored.
-
-;;; Line starting with #p should have 4 space separated elements.
-
-;;; p cnf <num-of-variables> <num-of-clauses>
-
-;;; Then following lines should have only comments or numbers.
-
-;;; A negative number means not (remember).
-
+(declare (hide dimacs) (unit parsedimacs))
 (require-extension s)
 (require-extension section-combinators)
 
-(define (parse-dimacs p)
+(define (dimacs p)
   (let*
       ((lines (filter
 	       (lambda (l)
@@ -37,11 +29,10 @@
       (letrec ((build-clauses
 		(lambda (lls result)
 		  (let-values (((x y) (span (lambda (v) (not (eq? v 0))) lls)))
-		    (let ((y1 (cdr y)))
-		      (if (not (eq? y1 '()))
-			  (build-clauses y1 (cons x result))
-			  result))))))
+		    (if (not (eq? (cdr y) '()))
+			(build-clauses (cdr y) (cons x result))
+			(cons x result))))))
 	(build-clauses lines '()))))))
 
-(define (main file-name)
-  (call-with-input-file file-name parse-dimacs))
+(define (parse-dimacs file-name)
+  (call-with-input-file file-name dimacs))
