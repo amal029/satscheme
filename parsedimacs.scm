@@ -37,9 +37,9 @@
   (let-values (((pline clauses) (call-with-input-file file-name dimacs)))
     (letrec ((build-sat-set
 	      (lambda (counter u ss)
-		(if (eq? counter u) (alist-cons counter '()  ss)
+		(if (eq? counter u) (alist-cons counter 'U  ss)
 		    (build-sat-set (+ counter 1) u
-				   (alist-cons counter '() ss)))))
+				   (alist-cons counter 'U ss)))))
 	     (fc (filter (compose not (left-section eq? #f)) clauses)))
       (values
        (build-sat-set 1 (string->number (car pline)) '())
