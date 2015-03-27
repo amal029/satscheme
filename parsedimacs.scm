@@ -22,17 +22,25 @@
     (cond
      ((eq? pline '())
       (begin
-	(display "Problem specification incomplete")
-	(newline)
-	(abort 'exn)))
+	(error 'dimacs "Problem specification incomplete" 'ERORR)))
      (else
       (letrec ((build-clauses
 		(lambda (lls result)
 		  (let-values (((x y) (span (lambda (v) (not (eq? v 0))) lls)))
 		    (if (not (eq? (cdr y) '()))
 			(build-clauses (cdr y) (cons x result))
-			(cons x result))))))
+			(values (cddr (s-split " " (car pline)))
+				(cons x result)))))))
 	(build-clauses lines '()))))))
 
 (define (parse-dimacs file-name)
-  (call-with-input-file file-name dimacs))
+  (let-values (((pline clauses) (call-with-input-file file-name dimacs)))
+    (letrec ((build-sat-set
+	      (lambda (counter u ss)
+		(if (eq? counter u) (alist-cons counter '()  ss)
+		    (build-sat-set (+ counter 1) u
+				   (alist-cons counter '() ss)))))
+	     (fc (filter (compose not (left-section eq? #f)) clauses)))
+      (values
+       (build-sat-set 1 (string->number (car pline)) '())
+       fc))))
