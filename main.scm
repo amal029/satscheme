@@ -16,7 +16,8 @@
 
 (define (myparse solve fn)
   (let-values (((ss clauses) (parse-dimacs fn)))
-    (when (not solve)
+    (cond
+     ((not solve)
       (for-each (lambda (l)
 		  (display l)
 		  (newline))
@@ -24,7 +25,9 @@
       (for-each (lambda (l)
 		  (display l)
 		  (newline))
-		clauses))))
+		clauses))
+     (else
+      (dpll ss clauses)))))
 
 
 (let* ((options (getopt-long (argv) grammar))
