@@ -13,7 +13,7 @@ A SAT solver written in scheme
 # Running the sat solver ($ is the user prompt)
 ```
 $> make clean && make
-$> ./sat -f <file-name> -s
+$> ./sat -f <file-name> -s [-t <timeout-value, in seconds>]
 ```
   * The file should be in the DIMACS format with space (not tab separation)
   * With the `-s` switch, the program prints out the result: the given
@@ -21,3 +21,5 @@ $> ./sat -f <file-name> -s
    an association list
   * Without the `-s` switch only the parsed clauses and the association
     list of uninitialized (`'U`) propositions is printed out.
+  * The option `-t` is optional and gives a timeout value in seconds.
+    Default behavior is never timeout (may run forever).

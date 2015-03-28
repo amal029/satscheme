@@ -35,7 +35,10 @@
 	 (error "Clause not in form of a list (or null): " clause))) clauses))
 
 ;;; The main "sat" procedure
-(define (dpll literals clauses)
+(define (dpll stime timeout-value literals clauses)
+  (if (and (not (equal? timeout-value 0)) 
+	   (>= (- (time->seconds (current-time)) stime) timeout-value))
+      (error "COULD NOT COMPLETE" clauses))
   (cond
    ((some-clause-is-false literals clauses) #f) ;unsatisfied cnf
    ((all-clauses-are-true literals clauses)
@@ -56,12 +59,14 @@
 	(let-values (((_ updated-clauses)
 		      (partition (lambda (x)
 				   (any (lambda (y) (equal? unit-literal y)) x)) clauses)))
-	  (dpll (alist-update (abs unit-literal) #f literals) updated-clauses)))
+	  (dpll stime timeout-value 
+		(alist-update (abs unit-literal) #f literals) updated-clauses)))
        ((and (not (equal? #f unit-literal)) (positive? unit-literal))
 	(let-values (((_ updated-clauses)
 		      (partition (lambda (x)
 				   (any (lambda (y) (equal? unit-literal y)) x)) clauses)))
-	  (dpll (alist-update unit-literal #t literals) updated-clauses)))
+	  (dpll stime timeout-value 
+		(alist-update unit-literal #t literals) updated-clauses)))
        (else
 	(let* ((unassigned-propositions (filter (lambda (x) (equal? 'U (cdr x))) literals))
 	       (jw-rule (lambda (literal)
@@ -79,7 +84,9 @@
 						(car (last val)))))
 	  (if (not (equal? some-unassigned-proposition #f))
 	      (if (dpll
+		   stime timeout-value
 		   (alist-update (car some-unassigned-proposition) #f literals) clauses) #t
 		   (dpll
+		    stime timeout-value
 		    (alist-update (car some-unassigned-proposition) #t literals) clauses))
 	      #t))))))))
