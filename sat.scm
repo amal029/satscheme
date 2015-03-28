@@ -5,10 +5,10 @@
 (require-extension matchable)
 
 (define (all-clauses-are-true literals)
-  (not (any (lambda (x) (eq? 'U (cdr x))) literals)))
+  (not (any (lambda (x) (equal? 'U (cdr x))) literals)))
 
 (define (some-clause-is-false literals clauses)
-  (if (any (lambda (x) (eq? 'U (cdr x))) literals) #f
+  (if (any (lambda (x) (equal? 'U (cdr x))) literals) #f
       (not (foldl and #t (map (right-section solve-clause literals) clauses)))))
 
 (define solve-clause
@@ -24,13 +24,13 @@
    (lambda (clause)
      (if (and (not (null? clause)) (list? clause))
 	 (cond
-	  ((and (eq? (length clause) 1)
-		(eq? (alist-ref (abs (car clause)) literals) 'U)) #t)
+	  ((and (equal? (length clause) 1)
+		(equal? (alist-ref (abs (car clause)) literals) 'U)) #t)
 	  (else
 	   (let-values (((us nus)
 			 (partition
-			  (lambda (x) (eq? (alist-ref (abs x) literals) 'U)) clause)))
-	     (if (eq? (length us) 1) (not (solve-clause nus literals))
+			  (lambda (x) (equal? (alist-ref (abs x) literals) 'U)) clause)))
+	     (if (equal? (length us) 1) (not (solve-clause nus literals))
 		 #f))))
 	 (error "Clause not in form of a list (or null): " clause))) clauses))
 
@@ -46,19 +46,25 @@
     #t) ;satisfied cnf
    (else 
     (let* ((unit-clause (get-unit-clause literals clauses))
-	   (unit-literal (if (not (eq? #f unit-clause))
+	   (unit-literal (if (not (equal? #f unit-clause))
 			     (find (lambda (x)
-				     (eq? (alist-ref (abs x) literals) 'U))
+				     (equal? (alist-ref (abs x) literals) 'U))
 				   unit-clause)
 			     #f)))
       (cond
-       ((and (not (eq? #f unit-literal)) (negative? unit-literal))
-	(dpll (alist-update (abs unit-literal) #f literals) clauses))
-       ((and (not (eq? #f unit-literal)) (positive? unit-literal))
-	(dpll (alist-update unit-literal #t literals) clauses))
+       ((and (not (equal? #f unit-literal)) (negative? unit-literal))
+	(let-values (((_ updated-clauses)
+		      (partition (lambda (x)
+				   (any (lambda (y) (equal? unit-literal y)) x)) clauses)))
+	  (dpll (alist-update (abs unit-literal) #f literals) updated-clauses)))
+       ((and (not (equal? #f unit-literal)) (positive? unit-literal))
+	(let-values (((_ updated-clauses)
+		      (partition (lambda (x)
+				   (any (lambda (y) (equal? unit-literal y)) x)) clauses)))
+	  (dpll (alist-update unit-literal #t literals) updated-clauses)))
        (else
-	(let ((some-unassigned-proposition (find (lambda (x) (eq? 'U (cdr x))) literals)))
-	  (if (not (eq? some-unassigned-proposition #f))
+	(let ((some-unassigned-proposition (find (lambda (x) (equal? 'U (cdr x))) literals)))
+	  (if (not (equal? some-unassigned-proposition #f))
 	      (if (dpll
 		   (alist-update (car some-unassigned-proposition) #f literals) clauses) #t
 		   (dpll

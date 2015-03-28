@@ -1,5 +1,5 @@
 CC=csc
-OPTS=-c -O2			# Be careful, making -O5 gives segfaults!
+OPTS=-c -O3 -d2			# Be careful, making -O5 gives segfaults!
 LDFLAGS=
 SRCS=parsedimacs.scm main.scm sat.scm
 OBJS=parsedimacs.o main.o sat.o

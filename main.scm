@@ -33,7 +33,7 @@
 (let* ((options (getopt-long (argv) grammar))
        (fn (alist-ref 'file options))
        (s (alist-ref 'solve options)))
-  (if (eq? fn #f)
+  (if (equal? fn #f)
       (usage)
       (if (list? fn)
 	  (map (left-section myparse s) fn)
