@@ -63,7 +63,20 @@
 				   (any (lambda (y) (equal? unit-literal y)) x)) clauses)))
 	  (dpll (alist-update unit-literal #t literals) updated-clauses)))
        (else
-	(let ((some-unassigned-proposition (find (lambda (x) (equal? 'U (cdr x))) literals)))
+	(let* ((unassigned-propositions (filter (lambda (x) (equal? 'U (cdr x))) literals))
+	       (jw-rule (lambda (literal)
+			  (let* ((clist (filter
+					 (lambda (x)
+					   (any (lambda (y)
+						  (equal? (car literal) y)) x)) clauses))
+				 (vlist (map (lambda (x) (expt 2 (- (length x)))) clist)))
+			    (foldl + 0 vlist))))
+	       (jw-rule-values (map jw-rule unassigned-propositions))
+	       (zipped-values (zip unassigned-propositions jw-rule-values))
+	       (val (sort zipped-values (lambda (x y)
+					  (< (car (cdr x)) (car (cdr y))))))
+	       (some-unassigned-proposition (if (null? val) #f
+						(car (last val)))))
 	  (if (not (equal? some-unassigned-proposition #f))
 	      (if (dpll
 		   (alist-update (car some-unassigned-proposition) #f literals) clauses) #t
