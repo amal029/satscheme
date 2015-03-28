@@ -9,8 +9,7 @@
 
 (define (some-clause-is-false literals clauses)
   (if (any (lambda (x) (eq? 'U (cdr x))) literals) #f
-      (begin
-	(not (foldl and #t (map (right-section solve-clause literals) clauses))))))
+      (not (foldl and #t (map (right-section solve-clause literals) clauses)))))
 
 (define solve-clause
   (match-lambda*
