@@ -14,4 +14,4 @@ interpret:
 	csi -ss main.scm $(FILE)
 
 clean:
-	rm -rf *.o main
+	rm -rf *.o sat

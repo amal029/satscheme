@@ -4,16 +4,16 @@
 (require-extension section-combinators)
 (require-extension matchable)
 
-(define (all-clauses-are-true literals)
-  (not (any (lambda (x) (equal? 'U (cdr x))) literals)))
+(define (all-clauses-are-true literals clauses)
+  (not (any (lambda (x) (eqv? 'U (cdr x))) literals)))
 
 (define (some-clause-is-false literals clauses)
-  (if (any (lambda (x) (equal? 'U (cdr x))) literals) #f
+  (if (any (lambda (x) (eqv? 'U (cdr x))) literals) #f
       (not (foldl and #t (map (right-section solve-clause literals) clauses)))))
 
 (define solve-clause
   (match-lambda*
-    ((() _) #t)
+    ((() _) #f)
     (((h . t) l)
      (let ((hv (alist-ref (abs h) l)))
        (or (if (negative? h) (not hv)
@@ -38,7 +38,7 @@
 (define (dpll literals clauses)
   (cond
    ((some-clause-is-false literals clauses) #f) ;unsatisfied cnf
-   ((all-clauses-are-true literals)
+   ((all-clauses-are-true literals clauses)
     (display "PROBLEM SATISFIED!!")
     (newline)
     (display literals)
