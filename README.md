@@ -9,7 +9,7 @@ A SAT solver written in scheme
   * combinators
   * s
 
-- Running the sat solver ($ is the user prompt)
+# Running the sat solver ($ is the user prompt)
 ```
 $> make clean && make
 $> ./main -f <file-name> -s
