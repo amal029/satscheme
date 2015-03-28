@@ -8,6 +8,7 @@ A SAT solver written in scheme
   * matchable
   * combinators
   * s
+  * getopt-long
 
 # Running the sat solver ($ is the user prompt)
 ```
