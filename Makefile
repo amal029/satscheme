@@ -4,9 +4,9 @@ LDFLAGS=
 SRCS=parsedimacs.scm main.scm sat.scm
 OBJS=parsedimacs.o main.o sat.o
 
-all: main
+all: sat
 
-main:
+sat:
 	$(CC) $(OPTS) $(SRCS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $@
 
