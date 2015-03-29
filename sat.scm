@@ -1,6 +1,7 @@
 (declare (hide all-clauses-are-true) (hide solve-clause)
 	 (hide some-clause-is-false) (hide get-unit-clause)
-	 (unit sat) (uses parsedimacs))
+	 (unit sat) (uses parsedimacs)
+	 (enforce-argument-types get-unit-clause))
 (require-extension section-combinators)
 (require-extension matchable)
 
@@ -19,6 +20,9 @@
        (or (if (negative? h) (not hv)
 	       hv) (solve-clause t l))))))
 
+(: get-unit-clause ((list-of (pair fixnum (or boolean symbol)))
+		    (list-of (list-of fixnum))
+		    -> (list-of fixnum)))
 (define (get-unit-clause literals clauses)
   (find
    (lambda (clause)
@@ -35,6 +39,9 @@
 	 (error "Clause not in form of a list (or null): " clause))) clauses))
 
 ;;; The main "sat" procedure
+(: dpll (fixnum fixnum (list-of (pair fixnum (or boolean symbol)))
+		(list-of (list-of fixnum))
+		-> boolean))
 (define (dpll stime timeout-value literals clauses)
   (if (and (not (equal? timeout-value 0)) 
 	   (>= (- (time->seconds (current-time)) stime) timeout-value))
