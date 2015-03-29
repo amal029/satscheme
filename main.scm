@@ -49,5 +49,5 @@
   (if (or (equal? h #t) (equal? fn #f))
       (display (usage grammar))
       (if (list? fn)
-	  (map (left-section myparse s) fn)
+	  (map (left-section myparse tv s) fn)
 	  (myparse tv s fn))))
